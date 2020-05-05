@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Domian.Entities
 {
-    public class Class1
+    public class MyText
     {
-    }
+		public string Name { get; set; }
+	}
 }
