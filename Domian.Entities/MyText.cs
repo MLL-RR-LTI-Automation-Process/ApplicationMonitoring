@@ -9,5 +9,8 @@ namespace Domian.Entities
     public class MyText
     {
 		public string Name { get; set; }
-	}
+        public int MyProperty { get; set; }
+    }
+
+
 }
