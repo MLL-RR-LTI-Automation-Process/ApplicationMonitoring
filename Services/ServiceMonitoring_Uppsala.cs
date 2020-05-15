@@ -1,54 +1,18 @@
-﻿using System;
+﻿using Services.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
+using System.Management;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using System.Management;
-using System.Net;
-using System.Net.Mail;
+using System.Timers;
 
-
-namespace Test
+namespace Services
 {
-    public partial class Form1 : Form
+   public class ServiceMonitoring_Uppsala:IServiceMonitoring
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
 
-        // Initializes timer so code will re run after every 30 mins
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            Timer timer = new Timer();
-            timer.Interval = (1800 * 1000); // 30 mins - 1800
-            timer.Tick += new EventHandler(button1_Click_1);
-            timer.Start();
-        }
-
-        //to display service status
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        //will update system date time on dashboard and call checkstatus()
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            label2.Text = System.DateTime.Now.ToString();
-            richTextBox1.Text = String.Empty;
-            CheckStatus();
-            CheckIfStop();
-            //displaystatus();
-            //teststop();
-            //displaystatus();
-            //teststart();
-        }
-
-        //will connect with remote server and check status of each service and update the same in text box on dashboard
         private void CheckStatus()
         {
             string[] data = new string[4] { "", "", "", "" };
@@ -105,14 +69,14 @@ namespace Test
 
                 foreach (string item in result)
                 {
-                    richTextBox1.Text += item + "\n\r";
+                    //richTextBox1.Text += item + "\n\r";
                 }
 
 
             }
             catch (Exception em)
             {
-                richTextBox1.Text = "An error occurred while connecting to the server " + em.Message;
+               // richTextBox1.Text = "An error occurred while connecting to the server " + em.Message;
 
             }
         }
@@ -120,7 +84,8 @@ namespace Test
         //will check if service is stopped, if stopped encountered then it will call teststop()
         private void CheckIfStop()
         {
-            String Status = richTextBox1.Text;
+           // String Status = richTexftBox1.Text;
+            string Status = "Dummy";
 
             if (!Status.Contains("Error"))
             {
@@ -132,11 +97,11 @@ namespace Test
             }
             else
             {
-                richTextBox1.Text += "\n\r" + "Please Start the Services Manually ";
+               // richTextBox1.Text += "\n\r" + "Please Start the Services Manually ";
                 SendMail("Exception occured : start services manually");
             }
 
-        } 
+        }
 
         //will call ServiceStop() according to condition 
         private void teststop()
@@ -335,18 +300,10 @@ namespace Test
             }
         }
 
-        //send manually with service status
-        private void button2_Click(object sender, EventArgs e)
-        {
 
-            SendMail("Service Status for Samplemanager");
-
-        }
-
-        //send mail function with subject passed as parameter string
         private void SendMail(string mailhead)
         {
-            richTextBox1.Clear();
+           // richTextBox1.Clear();
             CheckStatus();
 
             MailMessage mail = new MailMessage();
@@ -355,7 +312,7 @@ namespace Test
             //mail.To.Add("NFernan1@its.jnj.com, RPawaska @ITS.JNJ.com, ABaner36 @its.jnj.com, apatil35 @ITS.JNJ.com, RKadam1@its.jnj.com, MPatil11@its.jnj.com, DAgnihot@ITS.JNJ.com, BGopikri@ITS.JNJ.com"); 
             mail.To.Add("NFernan1@its.jnj.com, RPawaska @ITS.JNJ.com");
             mail.Subject = mailhead;
-            mail.Body = label2.Text + Environment.NewLine + richTextBox1.Text;
+           // mail.Body = label2.Text + Environment.NewLine + richTextBox1.Text;
             SmtpServer.Port = 25;
             SmtpServer.EnableSsl = true;
             try
@@ -369,7 +326,34 @@ namespace Test
             }
         }
 
+        public List<string> GetApplicationServices(string applicationname)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Dictionary<string, string> CheckServicesStatus(List<string> services)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SendMail(string subject, string body, List<string> mailreceipents)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetStatus(string servicename)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IServiceMonitoring.StartService(string servicename)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IServiceMonitoring.StopService(string servicename)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
-
