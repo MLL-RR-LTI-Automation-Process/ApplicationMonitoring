@@ -12,168 +12,9 @@ namespace Services
 {
    public class ServiceMonitoring_Uppsala:IServiceMonitoring
     {
-
-
-
-        //will check if service is stopped, if stopped encountered then it will call teststop()
-
-
-        //will call ServiceStop() according to condition 
-        private void teststop()
-        {
-        }
-        //will call ServiceStart() according to condition
-        private void teststart()
-        {
-
-        }
-        //will return the service status of the service name passed to this function
-        public static string getstatus(string servicename)
-        {
-            try
-            {
-                //Connect to the Server
-                var connection = new ConnectionOptions();
-                connection.Username = "";       // Username
-                connection.Password = "";       // Password
-                connection.Authority = "ntlmdomain:NA";
-                var scope = new ManagementScope("\\\\DESKTOP-UBLFJK5\\root\\CIMV2", connection); // Add Server name here 
-                scope.Connect();
-                string fp = "SELECT * FROM Win32_Service WHERE Name = ";
-                string qtp = string.Concat(fp, servicename); //fp + data[i];
-                string result = "default";
-                try
-                {
-                    Console.WriteLine("Inside Try");
-                    // Run a Query to Select Service from Win32
-                    ObjectQuery query = new ObjectQuery(qtp); // Add Service Name here
-                    ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
-                    ManagementObjectCollection queryCollection = searcher.Get();
-
-                    foreach (ManagementObject queryObj in queryCollection)
-                    {
-                        result = queryObj["State"].ToString();
-                    }
-                    return result;
-                }
-                catch (ManagementException er)
-                {
-                    Console.WriteLine("An error occurred while checking services status" + er.Message);
-                    result = "An error occurred while checking services status:(Error)" + er.Message;
-                    return result;
-                }
-            }
-            catch (Exception em)
-            {
-                string testexception = "An error occurred while connecting to the server " + em.Message;
-                return testexception;
-            }
-        }
-
-        //stops the service passed to this function
-        private static void StopService(string svcName)
-        {
-            try
-            {
-                #region Code to start the service
-
-                string serviceName = svcName;
-                string IP = "DESKTOP-UBLFJK5";
-                string username = "";
-                string password = "";
-                ConnectionOptions connectoptions = new ConnectionOptions();
-                connectoptions.Username = username;
-                connectoptions.Password = password;
-                ManagementScope scope = new ManagementScope(@"\\" + IP + @"\root\cimv2");
-                scope.Options = connectoptions;
-                SelectQuery query = new SelectQuery("select * from Win32_Service where name = " + serviceName + "");
-
-                using (ManagementObjectSearcher searcher = new
-                            ManagementObjectSearcher(scope, query))
-                {
-                    ManagementObjectCollection collection = searcher.Get();
-                    foreach (ManagementObject service in collection)
-                    {
-                        if (service["Started"].Equals(true))
-                        {
-                            //Stop the service
-                            service.InvokeMethod("StopService", null);
-                        }
-
-                        while (getstatus(svcName) == "Running")
-                        {
-                            //do nothing
-                            Timer timer1 = new Timer();
-                            timer1.Interval = (120 * 1000); //wait 2 mins
-                            timer1.Start();
-                        }
-                        // Console.WriteLine(svcName+" stopped");
-                    }
-                }
-
-                #endregion
-
-            }
-            catch (NullReferenceException)
-            {
-
-            }
-        }
-
-        //starts the service passed to this function
-        private static void StartService(string svcName)
-        {
-            try
-            {
-
-                #region Code to start the service
-
-                string serviceName = svcName;
-                string IP = "DESKTOP-UBLFJK5";
-                string username = "";
-                string password = "";
-
-                ConnectionOptions connectoptions = new ConnectionOptions();
-                connectoptions.Username = username;
-                connectoptions.Password = password;
-                ManagementScope scope = new ManagementScope(@"\\" + IP + @"\root\cimv2");
-                scope.Options = connectoptions;
-                SelectQuery query = new SelectQuery("select * from Win32_Service where name = " + serviceName + "");
-
-                using (ManagementObjectSearcher searcher = new
-                            ManagementObjectSearcher(scope, query))
-                {
-                    ManagementObjectCollection collection = searcher.Get();
-                    foreach (ManagementObject service in collection)
-                    {
-                        if (service["Started"].Equals(false))
-                        {
-                            //Stop the service
-                            service.InvokeMethod("StartService", null);
-                        }
-
-                        while (getstatus(svcName) == "Stopped")
-                        {
-                            //do nothing
-                            Timer timer1 = new Timer();
-                            timer1.Interval = (120 * 1000); //wait 2 mins
-                            timer1.Start();
-                        }
-                        //Console.WriteLine(svcName + " started");
-                    }
-                }
-
-                #endregion
-
-            }
-            catch (NullReferenceException)
-            {
-
-            }
-        }
-
-
-       
+        string subject = string.Empty;
+        string body = string.Empty;
+        List<string> mailrecipents = new List<string>();
 
         public List<string> GetApplicationServices(string applicationname)
         {
@@ -185,36 +26,50 @@ namespace Services
 
         public Dictionary<string, string> CheckServicesStatus(List<string> services)
         {
+            subject = "MLL Support Team Monitoring";
 
-            // String Status = richTexftBox1.Text;
-            string Status = "Dummy";
+            var dic = new Dictionary<string, string>();
+            
 
-            if (!Status.Contains("Error"))
+
+            foreach (var servicename in services)
             {
-                if (Status.Contains("Stopped"))
+                string Status = GetServiceStatus(servicename);
+
+                dic.Add(servicename, Status);
+                if (!Status.Contains("Error"))
                 {
-                    SendMail("Service STOP Encountered, initiating service RESTART procedure DO NOT ATTEMPT TO RESTART SERVICES MANUALLY");
-                    teststop();
+                    if (Status.Contains("Stopped"))
+                    {
+
+                        body = "Service STOP Encountered, initiating service RESTART procedure DO NOT ATTEMPT TO RESTART SERVICES MANUALLY";
+
+                        SendMail(subject, body, mailrecipents);
+                        //teststop();
+                    }
+                }
+                else
+                {
+
+                    body = "Exception occured : start services manually";
+                    SendMail(subject, body, mailrecipents);
                 }
             }
-            else
-            {
-                // richTextBox1.Text += "\n\r" + "Please Start the Services Manually ";
-                SendMail("Exception occured : start services manually");
-            }
-            throw new NotImplementedException();
+            return dic;
+           
+            
         }
 
         public bool SendMail(string subject, string body, List<string> mailreceipents)
         {   // richTextBox1.Clear();
-            CheckStatus();
+           // CheckStatus();
 
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient("smtp.na.jnj.com");
             mail.From = new MailAddress("NFernan1@its.jnj.com");
             //mail.To.Add("NFernan1@its.jnj.com, RPawaska @ITS.JNJ.com, ABaner36 @its.jnj.com, apatil35 @ITS.JNJ.com, RKadam1@its.jnj.com, MPatil11@its.jnj.com, DAgnihot@ITS.JNJ.com, BGopikri@ITS.JNJ.com"); 
             mail.To.Add("NFernan1@its.jnj.com, RPawaska @ITS.JNJ.com");
-            mail.Subject = mailhead;
+            mail.Subject = "";
             // mail.Body = label2.Text + Environment.NewLine + richTextBox1.Text;
             SmtpServer.Port = 25;
             SmtpServer.EnableSsl = true;
@@ -230,9 +85,9 @@ namespace Services
             throw new NotImplementedException();
         }
 
-        public string GetStatus(string servicename)
+        public string GetServiceStatus(string servicename)
         {
-            string[] data = new string[4] { "", "", "", "" };
+            string result = string.Empty;
 
             try
             {
@@ -245,113 +100,91 @@ namespace Services
                 var scope = new ManagementScope(
                     "\\\\DESKTOP-UBLFJK5\\root\\CIMV2", connection); // Add Server Name here
                 scope.Connect();
+                
+                    string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={servicename}"; 
 
-                //Console.WriteLine("Connected");
+                
+                    //Console.WriteLine("Inside Try");
+                    // Run a Query to Select Service from Win32
+                    ObjectQuery query = new ObjectQuery(serviceStatusQuery); // Add Service Name here
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
+                    ManagementObjectCollection queryCollection = searcher.Get();
 
-                //Connection to the server opened
-                string[] result = new string[4] { "", "", "", "" };
-                //data = new string[4] { "'smpbackSPR1'", "'smplock'", "'smpSPR1'", "'smwSPR1'" };
-                data = new string[4] { "'Service1'", "'Service2'", "'Service3'", "'Service4'" };
-                string fp = "SELECT * FROM Win32_Service WHERE Name = ";
-                for (int i = 0; i <= 3; i++)
-                {
-                    string qtp = string.Concat(fp, data[i]); //fp + data[i];
-
-                    try
+                    foreach (ManagementObject queryObj in queryCollection)
                     {
-                        //Console.WriteLine("Inside Try");
-                        // Run a Query to Select Service from Win32
-                        ObjectQuery query = new ObjectQuery(qtp); // Add Service Name here
-                        ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
-                        ManagementObjectCollection queryCollection = searcher.Get();
 
-                        foreach (ManagementObject queryObj in queryCollection)
-                        {
-
-                            result[i] = "Service: " + queryObj["Name"].ToString() + " Status: " + queryObj["State"].ToString();
-
-                        }
+                        result = "Service: " + queryObj["Name"].ToString() + " Status: " + queryObj["State"].ToString();
 
                     }
 
-                    catch (ManagementException er)
-                    {
-
-                        Console.WriteLine("An error occurred while checking services status" + er.Message);
-                        result[i] = "An error occurred while checking services status:(Error)" + er.Message;
-
-                    }
-
+                    return result;
                 }
-
-                foreach (string item in result)
-                {
-                    //richTextBox1.Text += item + "\n\r";
-                }
-
-
-            }
+            
             catch (Exception em)
             {
-                // richTextBox1.Text = "An error occurred while connecting to the server " + em.Message;
+                throw new Exception("Service Status Not Found, Check Manually");
 
             }
-            throw new NotImplementedException();
+            
+        }
+        
+        //starts the service passed to this function
+         public bool StartService(string servicename)
+        {
+            /* string[] test = new string[4] { "'Service4'", "'Service3'", "'Service2'", "'Service1'" };
+
+
+             if (getstatus(test[0]) == "Stopped")
+             {
+                 StartService(test[0]);
+             }
+             if (getstatus(test[0]) == "Running" && getstatus(test[1]) == "Stopped")
+             {
+                 StartService(test[1]);
+             }
+             if (getstatus(test[1]) == "Running" && getstatus(test[2]) == "Stopped")
+             {
+                 StartService(test[2]);
+             }
+             if (getstatus(test[2]) == "Running" && getstatus(test[3]) == "Stopped")
+             {
+                 StartService(test[3]);
+             }
+
+         SendMail("Service START procedure completed, below is the current status of services");
+         */
+            return false;
+            
         }
 
-        bool IServiceMonitoring.StartService(string servicename)
+        //stops the service passed to this function
+    
+       public bool StopService(string servicename)
         {
-                string[] test = new string[4] { "'Service4'", "'Service3'", "'Service2'", "'Service1'" };
+            /* string[] test = new string[4] { "'Service1'", "'Service2'", "'Service3'", "'Service4'" };
 
+             if (GetStatus(test[0]) == "Running")
+             {
+                 StopService(test[0]);
+             }
+             if (GetStatus(test[0]) == "Stopped" && getstatus(test[1]) == "Running")
+             {
+                 StopService(test[1]);
+             }
+             if (GetStatus(test[1]) == "Stopped" && getstatus(test[2]) == "Running")
+             {
+                 StopService(test[2]);
+             }
+             if (GetStatus(test[2]) == "Stopped" && getstatus(test[3]) == "Running")
+             {
+                 StopService(test[3]);
+             }
 
-                if (getstatus(test[0]) == "Stopped")
-                {
-                    StartService(test[0]);
-                }
-                if (getstatus(test[0]) == "Running" && getstatus(test[1]) == "Stopped")
-                {
-                    StartService(test[1]);
-                }
-                if (getstatus(test[1]) == "Running" && getstatus(test[2]) == "Stopped")
-                {
-                    StartService(test[2]);
-                }
-                if (getstatus(test[2]) == "Running" && getstatus(test[3]) == "Stopped")
-                {
-                    StartService(test[3]);
-                }
+             SendMail("Service STOP procedure completed, initiating service START procedure");
+             teststart(); */
 
-                SendMail("Service START procedure completed, below is the current status of services");
-            
-            throw new NotImplementedException();
-        }
-
-        bool IServiceMonitoring.StopService(string servicename)
-        {
-                string[] test = new string[4] { "'Service1'", "'Service2'", "'Service3'", "'Service4'" };
-
-                if (getstatus(test[0]) == "Running")
-                {
-                    StopService(test[0]);
-                }
-                if (getstatus(test[0]) == "Stopped" && getstatus(test[1]) == "Running")
-                {
-                    StopService(test[1]);
-                }
-                if (getstatus(test[1]) == "Stopped" && getstatus(test[2]) == "Running")
-                {
-                    StopService(test[2]);
-                }
-                if (getstatus(test[2]) == "Stopped" && getstatus(test[3]) == "Running")
-                {
-                    StopService(test[3]);
-                }
-
-                SendMail("Service STOP procedure completed, initiating service START procedure");
-                teststart();
-            
-
-            throw new NotImplementedException();
+            return false;
+           
         }
     }
 }

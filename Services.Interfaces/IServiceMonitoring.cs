@@ -11,7 +11,7 @@ namespace Services.Interfaces
         List<string> GetApplicationServices(string applicationname);
         Dictionary<string, string> CheckServicesStatus(List<string> services);
         bool SendMail(string subject,string body, List<string> mailreceipents);
-        string GetStatus(string servicename);
+        string GetServiceStatus(string servicename);
         bool StartService(string servicename);
         bool StopService(string servicename);
     }
