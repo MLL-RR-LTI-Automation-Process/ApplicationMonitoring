@@ -9,9 +9,11 @@ namespace Services.Interfaces
    public interface IServiceMonitoring
     {
         List<string> GetApplicationServices(string applicationname);
-        Dictionary<string, string> CheckServicesStatus(List<string> services);
-        bool SendMail(string subject,string body, List<string> mailreceipents);
-        string GetServiceStatus(string servicename);
+        Dictionary<string, string> CheckServicesStatus(
+			List<string> services,
+			string authority, 
+			string serverPath );
+        string GetServiceStatus( string servicename, string authority, string serverPath );
         bool StartService(string servicename);
         bool StopService(string servicename);
     }

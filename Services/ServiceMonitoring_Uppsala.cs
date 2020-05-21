@@ -14,17 +14,83 @@ namespace Services
     {
         string subject = string.Empty;
         string body = string.Empty;
-        List<string> mailrecipents = new List<string>();
+		List<string> applicationNames = new List<string>();
+		Dictionary<string, List<string>> servicesOfApplications = new Dictionary<string, List<string>>();
+		Dictionary<string, List<string>> mailrecipentsOfApplication = new Dictionary<string, List<string>>();
+		private readonly ICsvReaderService csvReaderService;
 
-        public List<string> GetApplicationServices(string applicationname)
+		public ServiceMonitoring_Uppsala( ICsvReaderService csvReaderService,string filePath)
+		{
+			if (string.IsNullOrEmpty(filePath))
+			{
+				throw new ArgumentException("message", nameof(filePath));
+			}
+
+			this.csvReaderService = csvReaderService ?? throw new ArgumentNullException(nameof(csvReaderService));
+			ParseCsvFile(filePath);
+		}
+
+		private void ParseCsvFile( string filePath )
+		{
+			var recordList = this.csvReaderService.ReadCsvFileToEmployeeModel(filePath);
+
+			foreach (var serviceModel in recordList)
+			{
+				var applicationName = serviceModel.ApplicationName;
+				applicationNames.Add(applicationName);
+				ParseServicesOfApplication(applicationName, serviceModel.Services);
+				ParseMailReceipentsOfApplication(applicationName,serviceModel.Emails);
+			}
+		}
+
+		private void ParseMailReceipentsOfApplication( string applicationName, string emails )
+		{
+			var listOfEmails = emails.Split(',').ToList();
+			mailrecipentsOfApplication.Add(applicationName, listOfEmails);
+		}
+
+		private void ParseServicesOfApplication( string applicationName, string services )
+		{
+			var listOfServices = services.Split(',').ToList();
+			servicesOfApplications.Add(applicationName, listOfServices);
+
+		}
+
+
+
+		public Dictionary<string, List<string>> ServicesOfApplications {
+			get
+			{
+				return servicesOfApplications;
+			}
+				}
+
+		public Dictionary<string, List<string>> MailReceipentsOfApplications
+		{
+			get
+			{
+				return mailrecipentsOfApplication;
+			}
+		}
+
+		public List<string> GetApplicationServices(string applicationname)
         {
-            
-        
-
-            throw new NotImplementedException();
+			List<string> services;
+			servicesOfApplications.TryGetValue(applicationname, out services);
+			return services;
         }
 
-        public Dictionary<string, string> CheckServicesStatus(List<string> services)
+		public List<string> GetMailReceipentsForApplication( string applicationname )
+		{
+			List<string> mailReceipents;
+			servicesOfApplications.TryGetValue(applicationname, out mailReceipents);
+			return mailReceipents;
+		}
+
+		public Dictionary<string, string> CheckServicesStatus(
+			List<string> services, 
+			string authority, 
+			string serverPath )
         {
             subject = "MLL Support Team Monitoring";
 
@@ -34,58 +100,18 @@ namespace Services
 
             foreach (var servicename in services)
             {
-                string Status = GetServiceStatus(servicename);
+                string Status = GetServiceStatus(servicename,authority,serverPath);
 
                 dic.Add(servicename, Status);
-                if (!Status.Contains("Error"))
-                {
-                    if (Status.Contains("Stopped"))
-                    {
-
-                        body = "Service STOP Encountered, initiating service RESTART procedure DO NOT ATTEMPT TO RESTART SERVICES MANUALLY";
-
-                        SendMail(subject, body, mailrecipents);
-                        //teststop();
-                    }
-                }
-                else
-                {
-
-                    body = "Exception occured : start services manually";
-                    SendMail(subject, body, mailrecipents);
-                }
+                
             }
             return dic;
            
             
         }
 
-        public bool SendMail(string subject, string body, List<string> mailreceipents)
-        {   // richTextBox1.Clear();
-           // CheckStatus();
-
-            MailMessage mail = new MailMessage();
-            SmtpClient SmtpServer = new SmtpClient("smtp.na.jnj.com");
-            mail.From = new MailAddress("NFernan1@its.jnj.com");
-            //mail.To.Add("NFernan1@its.jnj.com, RPawaska @ITS.JNJ.com, ABaner36 @its.jnj.com, apatil35 @ITS.JNJ.com, RKadam1@its.jnj.com, MPatil11@its.jnj.com, DAgnihot@ITS.JNJ.com, BGopikri@ITS.JNJ.com"); 
-            mail.To.Add("NFernan1@its.jnj.com, RPawaska @ITS.JNJ.com");
-            mail.Subject = "";
-            // mail.Body = label2.Text + Environment.NewLine + richTextBox1.Text;
-            SmtpServer.Port = 25;
-            SmtpServer.EnableSsl = true;
-            try
-            {
-                SmtpServer.Send(mail);
-                Console.WriteLine("Mail sent");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Not sent");
-            }
-            throw new NotImplementedException();
-        }
-
-        public string GetServiceStatus(string servicename)
+        
+        public string GetServiceStatus(string servicename,string authority, string serverPath)
         {
             string result = string.Empty;
 
@@ -96,10 +122,14 @@ namespace Services
                 connection.Username = "";       // Username
                 connection.Password = "";       // Password
 
-                connection.Authority = "ntlmdomain:NA";
-                var scope = new ManagementScope(
-                    "\\\\DESKTOP-UBLFJK5\\root\\CIMV2", connection); // Add Server Name here
-                scope.Connect();
+               // connection.Authority = "ntlmdomain:NA";
+				connection.Authority = authority;
+				//var scope = new ManagementScope(
+    //                "\\\\DESKTOP-UBLFJK5\\root\\CIMV2", connection); // Add Server Name here
+
+				var scope = new ManagementScope(
+					serverPath, connection);
+				scope.Connect();
                 
                     string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={servicename}"; 
 
@@ -113,7 +143,7 @@ namespace Services
                     foreach (ManagementObject queryObj in queryCollection)
                     {
 
-                        result = "Service: " + queryObj["Name"].ToString() + " Status: " + queryObj["State"].ToString();
+                        result =  queryObj["State"].ToString();
 
                     }
 
