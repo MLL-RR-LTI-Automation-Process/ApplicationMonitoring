@@ -52,7 +52,11 @@ namespace Services.Tests
 		[TestMethod()]
 		public void GetServiceStatusTest()
 		{
-			Assert.Fail();
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+		  new CSvServiceMonitoringReader(),
+		  "ApplicationsAndRespectiveServices.csv");
+			string servicename = "'AdobeARMservice'";
+			serviceMonitoring.GetServiceStatus(servicename, string.Empty, string.Empty);
 		}
 
 		[TestMethod()]

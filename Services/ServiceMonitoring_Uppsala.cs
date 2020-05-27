@@ -119,16 +119,16 @@ namespace Services
             {
                 //Connect to the Server
                 var connection = new ConnectionOptions();
-                connection.Username = "";       // Username
-                connection.Password = "";       // Password
+                connection.Username = "Admin_BPodder";       // Username
+                connection.Password = "Omnamashibai@99";       // Password
 
-               // connection.Authority = "ntlmdomain:NA";
-				connection.Authority = authority;
-				//var scope = new ManagementScope(
-    //                "\\\\DESKTOP-UBLFJK5\\root\\CIMV2", connection); // Add Server Name here
-
+                connection.Authority = "ntlmdomain:NA";
+				//	connection.Authority = authority;
 				var scope = new ManagementScope(
-					serverPath, connection);
+					"\\\\DESKTOP-STNNO\\root\\CIMV2", connection); // Add Server Name here
+
+				//var scope = new ManagementScope(
+				//	serverPath, connection);
 				scope.Connect();
                 
                     string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={servicename}"; 
