@@ -9,6 +9,9 @@ namespace Services.Interfaces
 {
    public interface IServiceMonitoring
     {
+		Dictionary<string, List<string>> ServicesOfApplications { get; }
+		Dictionary<string, List<string>> MailReceipentsOfApplications { get; }
+
 		bool Save( 
 			List<ApplicationServicesStatusModel> applicationServicesStatusModels,
 			string path );
@@ -22,10 +25,10 @@ namespace Services.Interfaces
 			List<string> services);
         string GetServiceStatus( 
 			string username,
-			string passowrd, 
-			string servicename, 
+			string passowrd,  
 			string authority, 
-			string serverPath );
+			string serverPath,
+			string servicename);
         bool StartService(string servicename);
         bool StopService(string servicename);
     }

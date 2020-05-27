@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileAccess.cs" />
+    <Compile Include="ServiceMonitoringController.cs" />
     <Compile Include="TextRepositorySaveRetrive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

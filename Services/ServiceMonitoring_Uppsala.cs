@@ -125,9 +125,9 @@ namespace Services
 				string Status = GetServiceStatus(
 					username,
 					passowrd,
-					serviceNameInQueryFormat,
 					authority,
-					serverPath);
+					serverPath,
+					serviceNameInQueryFormat);
 
                 dic.Add(servicename, Status);
                 
@@ -141,9 +141,9 @@ namespace Services
         public string GetServiceStatus(
 			string username, 
 			string passowrd,
-			string servicename,
 			string authority, 
-			string serverPath)
+			string serverPath,
+			string servicename)
         {
             string result = string.Empty;
 
