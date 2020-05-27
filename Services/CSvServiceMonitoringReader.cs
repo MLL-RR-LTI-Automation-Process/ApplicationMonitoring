@@ -15,6 +15,11 @@ namespace Services
 	{
 		public List<ServiceMonitoringModel> ReadCsvFileToEmployeeModel( string path )
 		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
 			try
 			{
 				using (var reader = new StreamReader(path, Encoding.Default))
