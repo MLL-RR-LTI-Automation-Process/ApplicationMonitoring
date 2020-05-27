@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Data;
+using Domian.Entities;
 
 namespace Services.Tests
 {
@@ -23,8 +25,11 @@ namespace Services.Tests
 		[TestMethod()]
 		public void GetApplicationServicesTest_shouldGetServicesOfApplication_ExpecteTrue()
 		{
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
+				new CSVServiceMonitoringWriter());
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			var services = serviceMonitoring.GetApplicationServices(
 				"San Angelo Downtime Tracker Proficy Historian");
@@ -34,8 +39,11 @@ namespace Services.Tests
 		[TestMethod()]
 		public void GetMailReceipentsForApplicationTest()
 		{
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
+				new CSVServiceMonitoringWriter());
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			var mailReceipents = serviceMonitoring.GetMailReceipentsForApplication(
 					"San Angelo Downtime Tracker Proficy Historian");
@@ -46,9 +54,12 @@ namespace Services.Tests
 		public void CheckServicesStatusTest()
 		{
 
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
+					new CSvServiceMonitoringReader(),
+					new CSVServiceMonitoringWriter());
 			var serviceMonitoring = new ServiceMonitoring_Uppsala(
-		  new CSvServiceMonitoringReader(),
-		  "ApplicationsAndRespectiveServices.csv");
+				serviceMonitoringRepository,
+				"ApplicationsAndRespectiveServices.csv");
 
 			var allServicesWithApplications = serviceMonitoring.ServicesOfApplications;
 			var servicesForAmazon = allServicesWithApplications["Amazon SSM Agent"];
@@ -67,9 +78,12 @@ namespace Services.Tests
 		[TestMethod()]
 		public void GetServiceStatusTest()
 		{
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
+				new CSvServiceMonitoringReader(),
+				new CSVServiceMonitoringWriter());
 			var serviceMonitoring = new ServiceMonitoring_Uppsala(
-		  new CSvServiceMonitoringReader(),
-		  "ApplicationsAndRespectiveServices.csv");
+				serviceMonitoringRepository,
+				"ApplicationsAndRespectiveServices.csv");
 			string servicename = "'AmazonSSMAgent'";
 			string username = "Admin_NFernan1";
 			string passowrd = "Feb@42020";
@@ -77,11 +91,36 @@ namespace Services.Tests
 			string serverPath = @"\\DESKTOP-1FTRA6H\root\CIMV2";
 			serviceMonitoring.GetServiceStatus(
 				username,
-				passowrd, 
-				servicename, 
+				passowrd,
+				servicename,
 				authority,
 				serverPath);
 
+		}
+
+		[TestMethod()]
+		public void SaveTest()
+		{
+			var firstApplicationName = "Adobe";
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
+				new CSvServiceMonitoringReader(),
+				new CSVServiceMonitoringWriter());
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+				serviceMonitoringRepository,
+				"ApplicationsAndRespectiveServices.csv");
+			var firstApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				firstApplicationName,
+				"AdobeARMservice",
+				"Running");
+			var secondApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				firstApplicationName,
+				"AdobeFlashPlayerUpdateSvc",
+				"Stopped");
+			var applicationServicesStatusModels = new List<ApplicationServicesStatusModel>();
+			applicationServicesStatusModels.Add(firstApplicationServicesStatusModel);
+			applicationServicesStatusModels.Add(secondApplicationServicesStatusModel);
+			var path = @"D:\ServiceMonitoringStatus_1.csv";
+			serviceMonitoring.Save(applicationServicesStatusModels, path);
 		}
 
 		[TestMethod()]
@@ -95,5 +134,7 @@ namespace Services.Tests
 		{
 			Assert.Fail();
 		}
+
+		
 	}
 }

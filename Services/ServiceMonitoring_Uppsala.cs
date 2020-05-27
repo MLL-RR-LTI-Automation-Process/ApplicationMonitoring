@@ -1,4 +1,6 @@
-﻿using Services.Interfaces;
+﻿using Domain.Interfaces;
+using Domian.Entities;
+using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,22 +19,30 @@ namespace Services
 		List<string> applicationNames = new List<string>();
 		Dictionary<string, List<string>> servicesOfApplications = new Dictionary<string, List<string>>();
 		Dictionary<string, List<string>> mailrecipentsOfApplication = new Dictionary<string, List<string>>();
-		private readonly ICsvReaderService csvReaderService;
+		private readonly IServiceMonitoringRepository serviceMonitoringRepository;
 
-		public ServiceMonitoring_Uppsala( ICsvReaderService csvReaderService,string filePath)
+		public ServiceMonitoring_Uppsala( 
+			IServiceMonitoringRepository serviceMonitoringRepository, 
+			string filePath)
 		{
+			if (serviceMonitoringRepository == null)
+			{
+				throw new ArgumentNullException(nameof(serviceMonitoringRepository));
+			}
+
 			if (string.IsNullOrEmpty(filePath))
 			{
 				throw new ArgumentException("message", nameof(filePath));
 			}
 
-			this.csvReaderService = csvReaderService ?? throw new ArgumentNullException(nameof(csvReaderService));
+			this.serviceMonitoringRepository = serviceMonitoringRepository;
 			ParseCsvFile(filePath);
+			
 		}
 
 		private void ParseCsvFile( string filePath )
 		{
-			var recordList = this.csvReaderService.ReadCsvFileToEmployeeModel(filePath);
+			var recordList = this.serviceMonitoringRepository.Get(filePath);
 
 			foreach (var serviceModel in recordList)
 			{
@@ -56,7 +66,7 @@ namespace Services
 
 		}
 
-
+		
 
 		public Dictionary<string, List<string>> ServicesOfApplications {
 			get
@@ -71,6 +81,16 @@ namespace Services
 			{
 				return mailrecipentsOfApplication;
 			}
+		}
+
+		public bool Save( 
+			List<ApplicationServicesStatusModel> applicationServicesStatusModels,
+			string path)
+		{
+			var result = this.serviceMonitoringRepository.Save(
+				applicationServicesStatusModels,
+				path);
+			return result;
 		}
 
 		public List<string> GetApplicationServices(string applicationname)
@@ -225,5 +245,7 @@ namespace Services
             return false;
            
         }
-    }
+
+	
+	}
 }

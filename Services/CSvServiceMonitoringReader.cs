@@ -13,7 +13,7 @@ namespace Services
 {
 	public class CSvServiceMonitoringReader : ICsvReaderService
 	{
-		public List<ServiceMonitoringModel> ReadCsvFileToEmployeeModel( string path )
+		public List<ServiceMonitoringModel> ReadCsvFileToServiceMonitoringModel( string path )
 		{
 			if (path == null)
 			{

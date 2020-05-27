@@ -9,6 +9,6 @@ namespace Services.Interfaces
 {
 	public interface ICsvReaderService
 	{
-		List<ServiceMonitoringModel> ReadCsvFileToEmployeeModel( string path );
+		List<ServiceMonitoringModel> ReadCsvFileToServiceMonitoringModel( string path );
 	}
 }

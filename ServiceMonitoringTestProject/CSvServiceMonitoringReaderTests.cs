@@ -12,11 +12,11 @@ namespace Services.Tests
 	public class CSvServiceMonitoringReaderTests
 	{
 		[TestMethod()]
-		public void ReadCsvFileToEmployeeModelTest()
+		public void ReadCsvFileToServiceMonitoringModelTest()
 		{
 			string path = "ApplicationsAndRespectiveServices.csv";
 			var csvReader = new CSvServiceMonitoringReader();
-			var recordList = csvReader.ReadCsvFileToEmployeeModel(path);
+			var recordList = csvReader.ReadCsvFileToServiceMonitoringModel(path);
 			var firstrecord = recordList[0];
 			var applicationName = firstrecord.ApplicationName;
 			var services = firstrecord.Services;

@@ -64,9 +64,6 @@
     <Compile Include="ServiceMonitoring_UppsalaTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ApplicationsAndRespectiveServices.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +91,9 @@
       <Project>{08061bdd-4bdc-4a0d-ba25-1327cae680df}</Project>
       <Name>Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ApplicationsAndRespectiveServices.csv" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domian.Entities;
 
 namespace Domain.Interfaces
 {
-	public interface ICSVRepository
+	public interface IServiceMonitoringRepository
 	{
-		bool Save(Dictionary<string,List<string>> data);
-		Dictionary<string, List<string>> retrive();
+		bool Save( 
+			List<ApplicationServicesStatusModel> applicationServicesStatusModels, 
+			string path);
+		List<ServiceMonitoringModel> Get(string path);
 
 	}
 }
