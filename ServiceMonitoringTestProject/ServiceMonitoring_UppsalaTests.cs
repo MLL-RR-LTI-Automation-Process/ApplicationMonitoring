@@ -55,8 +55,17 @@ namespace Services.Tests
 			var serviceMonitoring = new ServiceMonitoring_Uppsala(
 		  new CSvServiceMonitoringReader(),
 		  "ApplicationsAndRespectiveServices.csv");
-			string servicename = "'AdobeARMservice'";
-			serviceMonitoring.GetServiceStatus(servicename, string.Empty, string.Empty);
+			string servicename = "'AmazonSSMAgent'";
+			string username = null;
+			string passowrd = null;
+			string authority = "ntlmdomain:NA";
+			string serverPath = null;
+			serviceMonitoring.GetServiceStatus(
+				username,
+				passowrd, 
+				servicename, 
+				authority,
+				serverPath);
 		}
 
 		[TestMethod()]

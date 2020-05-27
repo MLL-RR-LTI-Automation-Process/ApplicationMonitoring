@@ -10,10 +10,17 @@ namespace Services.Interfaces
     {
         List<string> GetApplicationServices(string applicationname);
         Dictionary<string, string> CheckServicesStatus(
+			string username,
+			string passowrd,
 			List<string> services,
 			string authority, 
 			string serverPath );
-        string GetServiceStatus( string servicename, string authority, string serverPath );
+        string GetServiceStatus( 
+			string username,
+			string passowrd, 
+			string servicename, 
+			string authority, 
+			string serverPath );
         bool StartService(string servicename);
         bool StopService(string servicename);
     }

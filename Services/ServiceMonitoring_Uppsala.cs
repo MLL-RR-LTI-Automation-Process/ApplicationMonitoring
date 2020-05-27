@@ -88,6 +88,8 @@ namespace Services
 		}
 
 		public Dictionary<string, string> CheckServicesStatus(
+			string username,
+			string passowrd,
 			List<string> services, 
 			string authority, 
 			string serverPath )
@@ -100,7 +102,12 @@ namespace Services
 
             foreach (var servicename in services)
             {
-                string Status = GetServiceStatus(servicename,authority,serverPath);
+                string Status = GetServiceStatus(
+					username,
+					passowrd, 
+					servicename,
+					authority,
+					serverPath);
 
                 dic.Add(servicename, Status);
                 
@@ -111,7 +118,12 @@ namespace Services
         }
 
         
-        public string GetServiceStatus(string servicename,string authority, string serverPath)
+        public string GetServiceStatus(
+			string username, 
+			string passowrd,
+			string servicename,
+			string authority, 
+			string serverPath)
         {
             string result = string.Empty;
 
@@ -119,23 +131,20 @@ namespace Services
             {
                 //Connect to the Server
                 var connection = new ConnectionOptions();
-                connection.Username = "Admin_BPodder";       // Username
-                connection.Password = "Omnamashibai@99";       // Password
-
-                connection.Authority = "ntlmdomain:NA";
-				//	connection.Authority = authority;
-				var scope = new ManagementScope(
-					"\\\\DESKTOP-STNNO\\root\\CIMV2", connection); // Add Server Name here
-
+				//connection.Username = "Admin_RPawaska";       // Username
+				//connection.Password = "Qwerty@22020";       // Password
+				//connection.Authority = "ntlmdomain:NA";
 				//var scope = new ManagementScope(
-				//	serverPath, connection);
-				scope.Connect();
-                
-                    string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={servicename}"; 
+				//	"\\\\DESKTOP-STNNO\\root\\CIMV2", connection); // Add Server Name here
 
-                
-                    //Console.WriteLine("Inside Try");
-                    // Run a Query to Select Service from Win32
+				connection.Username = username;       // Username
+				connection.Password = passowrd;       // Password				
+			   connection.Authority = authority;				
+				var scope = new ManagementScope(
+					serverPath, connection);
+				scope.Connect();              
+                string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={servicename}"; 
+                // Run a Query to Select Service from Win32
                     ObjectQuery query = new ObjectQuery(serviceStatusQuery); // Add Service Name here
                     ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
                     ManagementObjectCollection queryCollection = searcher.Get();
