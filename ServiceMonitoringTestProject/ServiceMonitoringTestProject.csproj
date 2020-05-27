@@ -63,7 +63,9 @@
     <Compile Include="ServiceMonitoring_UppsalaTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ApplicationsAndRespectiveServices.csv" />
+    <Content Include="ApplicationsAndRespectiveServices.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

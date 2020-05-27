@@ -90,22 +90,22 @@ namespace Services
 		public Dictionary<string, string> CheckServicesStatus(
 			string username,
 			string passowrd,
-			List<string> services, 
 			string authority, 
-			string serverPath )
+			string serverPath,
+			List<string> services)
         {
-            subject = "MLL Support Team Monitoring";
+          
 
             var dic = new Dictionary<string, string>();
-            
-
 
             foreach (var servicename in services)
             {
-                string Status = GetServiceStatus(
+				var serviceNameInQueryFormat = $"'{servicename}'";
+
+				string Status = GetServiceStatus(
 					username,
-					passowrd, 
-					servicename,
+					passowrd,
+					serviceNameInQueryFormat,
 					authority,
 					serverPath);
 

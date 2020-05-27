@@ -46,7 +46,22 @@ namespace Services.Tests
 		public void CheckServicesStatusTest()
 		{
 
-			Assert.Fail();
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+		  new CSvServiceMonitoringReader(),
+		  "ApplicationsAndRespectiveServices.csv");
+
+			var allServicesWithApplications = serviceMonitoring.ServicesOfApplications;
+			var servicesForAmazon = allServicesWithApplications["Amazon SSM Agent"];
+			string username = "Admin_NFernan1";
+			string passowrd = "";
+			string authority = "ntlmdomain:NA";
+			string serverPath = @"\\DESKTOP-1FTRA6H\root\CIMV2";
+			var serviceswithStaus = serviceMonitoring.CheckServicesStatus(
+				username,
+				passowrd,
+				authority,
+				serverPath,
+				servicesForAmazon);
 		}
 
 		[TestMethod()]
@@ -56,16 +71,17 @@ namespace Services.Tests
 		  new CSvServiceMonitoringReader(),
 		  "ApplicationsAndRespectiveServices.csv");
 			string servicename = "'AmazonSSMAgent'";
-			string username = null;
-			string passowrd = null;
+			string username = "Admin_NFernan1";
+			string passowrd = "Feb@42020";
 			string authority = "ntlmdomain:NA";
-			string serverPath = null;
+			string serverPath = @"\\DESKTOP-1FTRA6H\root\CIMV2";
 			serviceMonitoring.GetServiceStatus(
 				username,
 				passowrd, 
 				servicename, 
 				authority,
 				serverPath);
+
 		}
 
 		[TestMethod()]

@@ -12,9 +12,9 @@ namespace Services.Interfaces
         Dictionary<string, string> CheckServicesStatus(
 			string username,
 			string passowrd,
-			List<string> services,
 			string authority, 
-			string serverPath );
+			string serverPath,
+			List<string> services);
         string GetServiceStatus( 
 			string username,
 			string passowrd, 
