@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CSvServiceMonitoringReaderTests.cs" />
     <Compile Include="CSVServiceMonitoringWriterTests.cs" />
+    <Compile Include="MailServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceMonitoring_UppsalaTests.cs" />
   </ItemGroup>

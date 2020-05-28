@@ -20,6 +20,7 @@ namespace ServiceMonitoring
 			CSvServiceMonitoringReader();
 		private static ICSVWriterService cSVWriterService = new 
 			CSVServiceMonitoringWriter();
+		private static IMailService mailService = new MailService();
 		private static string authority;
 		private static System.Timers.Timer myTimer;
 		private static string username;
@@ -54,7 +55,7 @@ namespace ServiceMonitoring
 						Console.ReadLine();
 						myTimer.Stop();
 						myTimer.Dispose();
-						Console.WriteLine("Monitoring services stop...");
+						Console.WriteLine("Monitoring services will stop...");
 						System.Console.ReadKey();
 						if (Console.KeyAvailable)
 						{
@@ -84,7 +85,7 @@ new CSVServiceMonitoringWriter());
 			var serviceMonitoring = new ServiceMonitoring_Uppsala(
 				serviceMonitoringRepository,
 				@"D:\ApplicationsAndRespectiveServices.csv");
-			var controller = new ServiceMonitoringController(serviceMonitoring);
+			var controller = new ServiceMonitoringController(serviceMonitoring,mailService);
 			controller.CheckServicesStatus(
 				username,
 				password,

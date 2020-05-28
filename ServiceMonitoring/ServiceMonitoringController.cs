@@ -11,16 +11,24 @@ namespace ServiceMonitoring
 	public class ServiceMonitoringController
 	{
 		private readonly IServiceMonitoring serviceMonitoring;
+		private readonly IMailService mailService;
 
 		public ServiceMonitoringController(
-			IServiceMonitoring serviceMonitoring)
+			IServiceMonitoring serviceMonitoring,
+			IMailService mailService)
 		{
 			if (serviceMonitoring == null)
 			{
 				throw new ArgumentNullException(nameof(serviceMonitoring));
 			}
 
+			if (mailService == null)
+			{
+				throw new ArgumentNullException(nameof(mailService));
+			}
+
 			this.serviceMonitoring = serviceMonitoring;
+			this.mailService = mailService;
 		}
 
 		public void CheckServicesStatus(
@@ -52,6 +60,12 @@ namespace ServiceMonitoring
 						service,
 						status);
 					listofApplicationServicesStatusModel.Add(applicationServicesStatusModel);
+					if (status.Equals("Stopped"))
+					{
+						var subject = $"{service} is stopped for application {applicationName} on server {servername}";
+						var body = "This is a notification mail to check service status";
+						mailService.SendMail(subject, body, mails);
+					}
 				}
 
 			}
