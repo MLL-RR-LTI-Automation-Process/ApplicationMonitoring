@@ -119,7 +119,7 @@ namespace Services.Tests
 			var applicationServicesStatusModels = new List<ApplicationServicesStatusModel>();
 			applicationServicesStatusModels.Add(firstApplicationServicesStatusModel);
 			applicationServicesStatusModels.Add(secondApplicationServicesStatusModel);
-			var path = @"D:\ServiceMonitoringStatus_1.csv";
+			var path = @"D:\ServiceMonitoringStatus_2.csv";
 			serviceMonitoring.Save(applicationServicesStatusModels, path);
 		}
 

@@ -120,14 +120,14 @@ namespace Services
 
             foreach (var servicename in services)
             {
-				var serviceNameInQueryFormat = $"'{servicename}'";
+				
 
 				string Status = GetServiceStatus(
 					username,
 					passowrd,
 					authority,
 					serverPath,
-					serviceNameInQueryFormat);
+					servicename);
 
                 dic.Add(servicename, Status);
                 
@@ -159,11 +159,13 @@ namespace Services
 
 				connection.Username = username;       // Username
 				connection.Password = passowrd;       // Password				
-			   connection.Authority = authority;				
+			   connection.Authority = authority;
+				var serverAbcolutePath = $"\\\\{serverPath}\\root\\CIMV2";
 				var scope = new ManagementScope(
-					serverPath, connection);
-				scope.Connect();              
-                string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={servicename}"; 
+					serverAbcolutePath, connection);
+				scope.Connect();
+				var serviceNameInQueryFormat = $"'{servicename}'";
+				string serviceStatusQuery = $"SELECT * FROM Win32_Service WHERE Name ={serviceNameInQueryFormat}"; 
                 // Run a Query to Select Service from Win32
                     ObjectQuery query = new ObjectQuery(serviceStatusQuery); // Add Service Name here
                     ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, query);
