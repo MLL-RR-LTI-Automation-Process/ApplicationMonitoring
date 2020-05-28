@@ -37,6 +37,27 @@ namespace Services.Tests
 		}
 
 		[TestMethod()]
+
+		public void GetAllRecords_ShouldGetOneRowDataConsistServerNameApplicationNameServicesMails()
+		{
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
+				new CSvServiceMonitoringReader(),
+				new CSVServiceMonitoringWriter());
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+				serviceMonitoringRepository,
+				"ApplicationsAndRespectiveServices.csv");
+			serviceMonitoring.AllRecords.Should().HaveCountGreaterThan(0);
+			var firstRecord = serviceMonitoring.AllRecords[0];
+			var servername = firstRecord.Item1;
+			var applicationName = firstRecord.Item2;
+			var services = firstRecord.Item3;
+			var mails = firstRecord.Item4;
+
+			services.Should().HaveCountGreaterThan(0);
+			mails.Should().HaveCountGreaterThan(0);
+		}
+
+		[TestMethod()]
 		public void GetMailReceipentsForApplicationTest()
 		{
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(

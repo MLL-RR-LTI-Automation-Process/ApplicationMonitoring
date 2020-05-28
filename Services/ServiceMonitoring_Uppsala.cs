@@ -17,6 +17,11 @@ namespace Services
         string subject = string.Empty;
         string body = string.Empty;
 		List<string> applicationNames = new List<string>();
+
+		List<Tuple<string, string, List<string>, List<string>>> allrecords = new 
+			List<Tuple<string, string, List<string>, List<string>>>();
+
+			 
 		Dictionary<string, List<string>> servicesOfApplications = new Dictionary<string, List<string>>();
 		Dictionary<string, List<string>> mailrecipentsOfApplication = new Dictionary<string, List<string>>();
 		private readonly IServiceMonitoringRepository serviceMonitoringRepository;
@@ -43,26 +48,38 @@ namespace Services
 		private void ParseCsvFile( string filePath )
 		{
 			var recordList = this.serviceMonitoringRepository.Get(filePath);
-
+			
 			foreach (var serviceModel in recordList)
 			{
+				var serverName = serviceModel.ServerName;
 				var applicationName = serviceModel.ApplicationName;
+				
+
 				applicationNames.Add(applicationName);
-				ParseServicesOfApplication(applicationName, serviceModel.Services);
-				ParseMailReceipentsOfApplication(applicationName,serviceModel.Emails);
+				var services = ParseServicesOfApplication(applicationName, serviceModel.Services);
+				var mails = ParseMailReceipentsOfApplication(applicationName,serviceModel.Emails);
+				Tuple<string, string, List<string>, List<string>> record = new
+					Tuple<string, string, List<string>, List<string>>(
+					serverName,
+					applicationName,
+					services,
+					mails);
+				allrecords.Add(record);
 			}
 		}
 
-		private void ParseMailReceipentsOfApplication( string applicationName, string emails )
+		private List<string> ParseMailReceipentsOfApplication( string applicationName, string emails )
 		{
 			var listOfEmails = emails.Split(',').ToList();
 			mailrecipentsOfApplication.Add(applicationName, listOfEmails);
+			return listOfEmails;
 		}
 
-		private void ParseServicesOfApplication( string applicationName, string services )
+		private List<string> ParseServicesOfApplication( string applicationName, string services )
 		{
 			var listOfServices = services.Split(',').ToList();
 			servicesOfApplications.Add(applicationName, listOfServices);
+			return listOfServices;
 
 		}
 
@@ -80,6 +97,14 @@ namespace Services
 			get
 			{
 				return mailrecipentsOfApplication;
+			}
+		}
+
+		public List<Tuple<string, string, List<string>, List<string>>> AllRecords
+		{
+			get
+			{
+				return allrecords;
 			}
 		}
 
@@ -151,12 +176,7 @@ namespace Services
             {
                 //Connect to the Server
                 var connection = new ConnectionOptions();
-				//connection.Username = "Admin_RPawaska";       // Username
-				//connection.Password = "Qwerty@22020";       // Password
-				//connection.Authority = "ntlmdomain:NA";
-				//var scope = new ManagementScope(
-				//	"\\\\DESKTOP-STNNO\\root\\CIMV2", connection); // Add Server Name here
-
+				
 				connection.Username = username;       // Username
 				connection.Password = passowrd;       // Password				
 			   connection.Authority = authority;

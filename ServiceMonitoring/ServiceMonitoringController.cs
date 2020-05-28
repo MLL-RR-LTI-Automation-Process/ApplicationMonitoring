@@ -27,25 +27,28 @@ namespace ServiceMonitoring
 			string username,
 			string passowrd,
 			string authority,
-			string serverPath,
 			string savetoPath)
 		{
 			var listofApplicationServicesStatusModel = new List
 				<ApplicationServicesStatusModel>();
-			foreach (var application in this.serviceMonitoring.ServicesOfApplications.Keys)
+			foreach (var record in serviceMonitoring.AllRecords)
 			{
-				var services = this.serviceMonitoring.GetApplicationServices(application);
+				var firstRecord = serviceMonitoring.AllRecords[0];
+				var servername = firstRecord.Item1;
+				var applicationName = firstRecord.Item2;
+				var services = firstRecord.Item3;
+				var mails = firstRecord.Item4;
 				foreach (var service in services)
 				{
 					var status = this.serviceMonitoring.GetServiceStatus(
 						username,
 						passowrd,
 						authority,
-						serverPath,
+						servername,
 						service);
 					var applicationServicesStatusModel = new ApplicationServicesStatusModel(
-						serverPath,
-						application,
+						servername,
+						applicationName,
 						service,
 						status);
 					listofApplicationServicesStatusModel.Add(applicationServicesStatusModel);

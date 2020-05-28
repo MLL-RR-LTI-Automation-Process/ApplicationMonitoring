@@ -39,10 +39,7 @@ namespace ServiceMonitoring
 					{
 						Console.WriteLine("Authority:");
 						var authority = Console.ReadLine();
-						if (!string.IsNullOrWhiteSpace(authority))
-						{
-							Console.WriteLine("Server Path:");
-							var serverPath = Console.ReadLine();
+						
 							var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
@@ -54,12 +51,11 @@ namespace ServiceMonitoring
 								username,
 								password,
 								authority,
-								serverPath,
 								@"D:\ServiceMonitoringConsole.csv");
 						}
 
 
-					}
+					
 
 				}
 			}

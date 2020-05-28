@@ -11,7 +11,7 @@ namespace Services.Interfaces
     {
 		Dictionary<string, List<string>> ServicesOfApplications { get; }
 		Dictionary<string, List<string>> MailReceipentsOfApplications { get; }
-
+		List<Tuple<string, string, List<string>, List<string>>> AllRecords { get; }
 		bool Save( 
 			List<ApplicationServicesStatusModel> applicationServicesStatusModels,
 			string path );
