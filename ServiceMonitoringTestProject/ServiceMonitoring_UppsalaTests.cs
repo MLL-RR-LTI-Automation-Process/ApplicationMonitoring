@@ -107,7 +107,7 @@ namespace Services.Tests
 				"ApplicationsAndRespectiveServices.csv");
 			string servicename = "'AmazonSSMAgent'";
 			string username = "Admin_NFernan1";
-			string passowrd = "Feb@42020";
+			string passowrd = "";
 			string authority = "ntlmdomain:NA";
 			string serverPath = @"\\DESKTOP-1FTRA6H\root\CIMV2";
 			serviceMonitoring.GetServiceStatus(
