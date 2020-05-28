@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using Domain.Interfaces;
 using Domian.Entities;
 using Infrastructure.Data;
@@ -19,7 +20,11 @@ namespace ServiceMonitoring
 			CSvServiceMonitoringReader();
 		private static ICSVWriterService cSVWriterService = new 
 			CSVServiceMonitoringWriter();
-		
+		private static string authority;
+		private static System.Timers.Timer myTimer;
+		private static string username;
+		private static string password;
+
 		static void Main( string[] args )
 		{
 			Console.WriteLine("Press enter key to start.....");
@@ -28,39 +33,65 @@ namespace ServiceMonitoring
 			{
 
 				Console.WriteLine("User Name:");
-				var username = Console.ReadLine();
+				 username = Console.ReadLine();
 				if (!string.IsNullOrWhiteSpace(username))
 				{
 
 					Console.WriteLine("Password:");
-					var password = GetConsolePassword();
+					 password = GetConsolePassword();
 
 					if (!string.IsNullOrWhiteSpace(password))
 					{
 						Console.WriteLine("Authority:");
-						var authority = Console.ReadLine();
-						
-							var serviceMonitoringRepository = new ServiceMonitoringRepository(
-				new CSvServiceMonitoringReader(),
-				new CSVServiceMonitoringWriter());
-							var serviceMonitoring = new ServiceMonitoring_Uppsala(
-								serviceMonitoringRepository,
-								@"D:\ApplicationsAndRespectiveServices.csv");
-							var controller = new ServiceMonitoringController(serviceMonitoring);
-							controller.CheckServicesStatus(
-								username,
-								password,
-								authority,
-								@"D:\ServiceMonitoringConsole.csv");
+						 authority = Console.ReadLine();
+						var twoMinsIntervalinMilliSec = 120000;
+						var thirySecondInterval = 30000;
+						myTimer = new System.Timers.Timer(twoMinsIntervalinMilliSec);
+						myTimer.Elapsed += OnTimedEvent;
+						myTimer.AutoReset = true;
+						myTimer.Enabled = true;
+						Console.WriteLine("\nPress Enter key to stop...\n");
+						Console.ReadLine();
+						myTimer.Stop();
+						myTimer.Dispose();
+						Console.WriteLine("Monitoring services stop...");
+						System.Console.ReadKey();
+						if (Console.KeyAvailable)
+						{
+							Environment.Exit(0);
 						}
 
+					}
 
-					
+
+
 
 				}
 			}
 
 		}
+
+		private static void OnTimedEvent( object sender, ElapsedEventArgs e )
+		{
+			CheckServerApplicatiosServicesStatus(username, password, authority);
+		}
+
+		private static void CheckServerApplicatiosServicesStatus( string username, string password, string authority )
+		{
+			var serviceMonitoringRepository = new ServiceMonitoringRepository(
+new CSvServiceMonitoringReader(),
+new CSVServiceMonitoringWriter());
+			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+				serviceMonitoringRepository,
+				@"D:\ApplicationsAndRespectiveServices.csv");
+			var controller = new ServiceMonitoringController(serviceMonitoring);
+			controller.CheckServicesStatus(
+				username,
+				password,
+				authority,
+				@"D:\ServiceMonitoringConsole.csv");
+		}
+
 		/// <summary>
 		/// Gets the console secure password.
 		/// </summary>
