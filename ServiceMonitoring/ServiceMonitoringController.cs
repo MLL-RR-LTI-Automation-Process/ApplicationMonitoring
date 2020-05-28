@@ -44,6 +44,7 @@ namespace ServiceMonitoring
 						serverPath,
 						service);
 					var applicationServicesStatusModel = new ApplicationServicesStatusModel(
+						serverPath,
 						application,
 						service,
 						status);

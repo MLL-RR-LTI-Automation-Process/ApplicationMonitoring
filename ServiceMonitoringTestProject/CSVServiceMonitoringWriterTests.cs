@@ -16,12 +16,14 @@ namespace Services.Tests
 		public void SaveTest()
 		{
 			var firstApplicationName = "Adobe";
-
-			var firstApplicationServicesStatusModel = new ApplicationServicesStatusModel(
-				firstApplicationName,
+			var serverName = "DESKTOP-1FTRA6H";
+			  var firstApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				  serverName,
+				  firstApplicationName,
 				"AdobeARMservice", 
 				"Running");
 			var secondApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				 serverName,
 				firstApplicationName,
 				"AdobeFlashPlayerUpdateSvc",
 				"Stopped");
@@ -31,6 +33,7 @@ namespace Services.Tests
 			var dict2 = new Dictionary<string, string>();
 
 			var thirdApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				 serverName,
 				secondApplicationName,
 				"AmazonSSMAgent",
 				"Running");
@@ -38,6 +41,7 @@ namespace Services.Tests
 			
 			var thirdApplicationName = "Application Identity";
 			var fourthApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				 serverName,
 				thirdApplicationName,
 				"AppIDSvc", 
 				"Running");

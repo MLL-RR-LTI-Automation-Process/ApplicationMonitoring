@@ -102,6 +102,7 @@ namespace Services.Tests
 		public void SaveTest()
 		{
 			var firstApplicationName = "Adobe";
+			var serverName = "DESKTOP-1FTRA6H";
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
@@ -109,10 +110,12 @@ namespace Services.Tests
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			var firstApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				serverName,
 				firstApplicationName,
 				"AdobeARMservice",
 				"Running");
 			var secondApplicationServicesStatusModel = new ApplicationServicesStatusModel(
+				serverName,
 				firstApplicationName,
 				"AdobeFlashPlayerUpdateSvc",
 				"Stopped");

@@ -11,9 +11,15 @@ namespace Domian.Entities
 
 
 		public ApplicationServicesStatusModel(
+			string serverName,
 			string applicationName, 
 			string serviceName,string status )
 		{
+			if (serverName == null)
+			{
+				throw new ArgumentNullException(nameof(serverName));
+			}
+
 			if (applicationName == null)
 			{
 				throw new ArgumentNullException(nameof(applicationName));
@@ -29,11 +35,13 @@ namespace Domian.Entities
 				throw new ArgumentNullException(nameof(status));
 			}
 
+			ServerName = serverName;
 			ApplicationName = applicationName;
 			ServiceName = serviceName;
 			Status = status;
 		}
 
+		public string ServerName { get; }
 		public string ApplicationName { get; }
 		public string ServiceName { get; }
 		public string Status { get; }

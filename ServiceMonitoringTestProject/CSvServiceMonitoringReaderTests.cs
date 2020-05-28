@@ -18,17 +18,18 @@ namespace Services.Tests
 			var csvReader = new CSvServiceMonitoringReader();
 			var recordList = csvReader.ReadCsvFileToServiceMonitoringModel(path);
 			var firstrecord = recordList[0];
+			var serverName = firstrecord.ServerName;
 			var applicationName = firstrecord.ApplicationName;
 			var services = firstrecord.Services;
 			var emails = firstrecord.Emails;
 
 			//Assert
-			Assert.AreEqual("San Angelo Downtime Tracker Proficy Historian", applicationName);
+			Assert.AreEqual("Amazon SSM Agent", applicationName);
 
 			//Services
 			var listOfServices = services.Split(',').ToList();
 			var firstService = listOfServices[0];
-			Assert.AreEqual("IndexingService", firstService);
+			Assert.AreEqual("AmazonSSMAgent", firstService);
 
 			//Emails
 			var listOfEmails = emails.Split(',').ToList();
