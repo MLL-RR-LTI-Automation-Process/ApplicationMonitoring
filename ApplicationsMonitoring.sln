@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceMonitoring", "Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceMonitoringTestProject", "ServiceMonitoringTestProject\ServiceMonitoringTestProject.csproj", "{DE3D6882-A38A-4350-944A-9CB8C54A9AF2}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MLLRRLTISupport", "MLLRRLTISupport\MLLRRLTISupport.vdproj", "{445443D9-6BF2-4418-93AB-A92526FD85FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,8 @@ Global
 		{DE3D6882-A38A-4350-944A-9CB8C54A9AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE3D6882-A38A-4350-944A-9CB8C54A9AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE3D6882-A38A-4350-944A-9CB8C54A9AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445443D9-6BF2-4418-93AB-A92526FD85FA}.Debug|Any CPU.ActiveCfg = Debug
+		{445443D9-6BF2-4418-93AB-A92526FD85FA}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
