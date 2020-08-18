@@ -43,8 +43,8 @@ namespace ServiceMonitoring
 
 					if (!string.IsNullOrWhiteSpace(password))
 					{
-						Console.WriteLine("Authority:");
-						 authority = Console.ReadLine();
+						//Console.WriteLine("Authority:");
+						// authority = Console.ReadLine();
 						var twoMinsIntervalinMilliSec = 120000;
 						var thirySecondInterval = 30000;
 						myTimer = new System.Timers.Timer(twoMinsIntervalinMilliSec);
@@ -82,7 +82,7 @@ namespace ServiceMonitoring
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 new CSvServiceMonitoringReader(),
 new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new Services.ServiceMonitoring(
 				serviceMonitoringRepository,
 				@"D:\ApplicationsAndRespectiveServices.csv");
 			var controller = new ServiceMonitoringController(serviceMonitoring,mailService);
