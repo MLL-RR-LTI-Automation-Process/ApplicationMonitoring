@@ -17,7 +17,7 @@ namespace Services.Tests
 		[TestMethod()]
 		public void ServiceMonitoring_UppsalaTest_CheckNull_ShouldThrowException()
 		{
-			Action action = () => new ServiceMonitoring_Uppsala(null, null);
+			Action action = () => new ServiceMonitoring(null, null);
 			action.Should().Throw<ArgumentException>();
 
 		}
@@ -28,7 +28,7 @@ namespace Services.Tests
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new ServiceMonitoring(
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			var services = serviceMonitoring.GetApplicationServices(
@@ -43,7 +43,7 @@ namespace Services.Tests
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new ServiceMonitoring(
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			serviceMonitoring.AllRecords.Should().HaveCountGreaterThan(0);
@@ -63,7 +63,7 @@ namespace Services.Tests
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new ServiceMonitoring(
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			var mailReceipents = serviceMonitoring.GetMailReceipentsForApplication(
@@ -78,7 +78,7 @@ namespace Services.Tests
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 					new CSvServiceMonitoringReader(),
 					new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new ServiceMonitoring(
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 
@@ -102,7 +102,7 @@ namespace Services.Tests
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new ServiceMonitoring(
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			string servicename = "'AmazonSSMAgent'";
@@ -127,7 +127,7 @@ namespace Services.Tests
 			var serviceMonitoringRepository = new ServiceMonitoringRepository(
 				new CSvServiceMonitoringReader(),
 				new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new ServiceMonitoring_Uppsala(
+			var serviceMonitoring = new ServiceMonitoring(
 				serviceMonitoringRepository,
 				"ApplicationsAndRespectiveServices.csv");
 			var firstApplicationServicesStatusModel = new ApplicationServicesStatusModel(
