@@ -43,9 +43,9 @@ namespace ServiceMonitoring
 
 					if (!string.IsNullOrWhiteSpace(password))
 					{
-						//Console.WriteLine("Authority:");
-						// authority = Console.ReadLine();
-						var twoMinsIntervalinMilliSec = 120000;
+                        Console.WriteLine("Authority:");
+                        authority = Console.ReadLine();
+                        var twoMinsIntervalinMilliSec = 120000;
 						var thirySecondInterval = 30000;
 						myTimer = new System.Timers.Timer(twoMinsIntervalinMilliSec);
 						myTimer.Elapsed += OnTimedEvent;
