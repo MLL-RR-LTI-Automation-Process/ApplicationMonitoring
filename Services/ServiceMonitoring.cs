@@ -12,7 +12,7 @@ using System.Timers;
 
 namespace Services
 {
-   public class ServiceMonitoring_Uppsala:IServiceMonitoring
+   public class ServiceMonitoring:IServiceMonitoring
     {
         string subject = string.Empty;
         string body = string.Empty;
@@ -26,7 +26,7 @@ namespace Services
 		Dictionary<string, List<string>> mailrecipentsOfApplication = new Dictionary<string, List<string>>();
 		private readonly IServiceMonitoringRepository serviceMonitoringRepository;
 
-		public ServiceMonitoring_Uppsala( 
+		public ServiceMonitoring( 
 			IServiceMonitoringRepository serviceMonitoringRepository, 
 			string filePath)
 		{
@@ -179,7 +179,7 @@ namespace Services
 				
 				connection.Username = username;       // Username
 				connection.Password = passowrd;       // Password				
-			   connection.Authority = authority;
+			  // connection.Authority = authority;
 				var serverAbcolutePath = $"\\\\{serverPath}\\root\\CIMV2";
 				var scope = new ManagementScope(
 					serverAbcolutePath, connection);

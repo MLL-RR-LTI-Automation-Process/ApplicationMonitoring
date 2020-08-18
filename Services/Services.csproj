@@ -60,7 +60,7 @@
     <Compile Include="CSvServiceMonitoringReader.cs" />
     <Compile Include="CSVServiceMonitoringWriter.cs" />
     <Compile Include="MailService.cs" />
-    <Compile Include="ServiceMonitoring_Uppsala.cs" />
+    <Compile Include="ServiceMonitoring.cs" />
     <Compile Include="TextService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
