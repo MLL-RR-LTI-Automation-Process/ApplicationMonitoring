@@ -179,7 +179,7 @@ namespace Services
 				
 				connection.Username = username;       // Username
 				connection.Password = passowrd;       // Password				
-			  // connection.Authority = authority;
+			   connection.Authority = authority;
 				var serverAbcolutePath = $"\\\\{serverPath}\\root\\CIMV2";
 				var scope = new ManagementScope(
 					serverAbcolutePath, connection);
