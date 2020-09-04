@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileAccess.cs" />
+    <Compile Include="SchdeuleArgs.cs" />
+    <Compile Include="ScheduleReport.cs" />
     <Compile Include="ServiceMonitoringController.cs" />
     <Compile Include="ServiceMonitoringConsole.cs" />
     <Compile Include="TextRepositorySaveRetrive.cs" />
