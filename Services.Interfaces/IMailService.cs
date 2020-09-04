@@ -8,6 +8,6 @@ namespace Services.Interfaces
 {
 	public interface IMailService
 	{
-		bool SendMail( string subject, string body, List<string> mailReceipents );
+		bool SendMail( string subject, string body, List<string> mailReceipents,bool bodyHtml );
 	}
 }

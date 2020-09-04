@@ -46,29 +46,29 @@ namespace ServiceMonitoring
 				var applicationName = firstRecord.Item2;
 				var services = firstRecord.Item3;
 				var mails = firstRecord.Item4;
-				foreach (var service in services)
-				{
-					var status = this.serviceMonitoring.GetServiceStatus(
-						username,
-						passowrd,
-						authority,
-						servername,
-						service);
-					var applicationServicesStatusModel = new ApplicationServicesStatusModel(
-						servername,
-						applicationName,
-						service,
-						status);
-					listofApplicationServicesStatusModel.Add(applicationServicesStatusModel);
-					if (status.Equals("Stopped"))
-					{
-						var subject = $"{service} is stopped for application {applicationName} on server {servername}";
-						var body = "This is a notification mail to check service status";
-						mailService.SendMail(subject, body, mails);
-					}
-				}
+                foreach (var service in services)
+                {
+                    var status = this.serviceMonitoring.GetServiceStatus(
+                        username,
+                        passowrd,
+                        authority,
+                        servername,
+                        service);
+                    var applicationServicesStatusModel = new ApplicationServicesStatusModel(
+                        servername,
+                        applicationName,
+                        service,
+                        status);
+                    listofApplicationServicesStatusModel.Add(applicationServicesStatusModel);
+                    if (status.Equals("Stopped"))
+                    {
+                        var subject = $"{service} is stopped for application {applicationName} on server {servername}";
+                        var body = "This is a notification mail to check service status";
+                        mailService.SendMail(subject, body, mails, false);
+                    }
+                }
 
-			}
+            }
 
 			this.serviceMonitoring.Save(listofApplicationServicesStatusModel, savetoPath);
 		}

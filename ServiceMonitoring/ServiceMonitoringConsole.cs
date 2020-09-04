@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Domain.Interfaces;
@@ -25,10 +26,19 @@ namespace ServiceMonitoring
 		private static System.Timers.Timer myTimer;
 		private static string username;
 		private static string password;
+        private static ServiceMonitoringRepository serviceMonitoringRepository;
+        private static Services.ServiceMonitoring serviceMonitoring;
 
-		static void Main( string[] args )
+        public event EventHandler<SchdeuleArgs> ScheduleEvent;
+        static void Main( string[] args )
 		{
-			Console.WriteLine("Press enter key to start.....");
+            serviceMonitoringRepository = new ServiceMonitoringRepository(
+new CSvServiceMonitoringReader(),
+new CSVServiceMonitoringWriter());
+            serviceMonitoring = new Services.ServiceMonitoring(
+               serviceMonitoringRepository,
+               @"D:\ApplicationsAndRespectiveServices.csv");
+            Console.WriteLine("Press enter key to start.....");
 			var keyinfo = Console.ReadKey();
 			if (keyinfo.Key.Equals(ConsoleKey.Enter))
 			{
@@ -51,6 +61,13 @@ namespace ServiceMonitoring
 						myTimer.Elapsed += OnTimedEvent;
 						myTimer.AutoReset = true;
 						myTimer.Enabled = true;
+                        Console.WriteLine("Do you want shift Report? y/n");
+                        var shiftreportenable = Console.ReadLine();
+                        if(shiftreportenable.ToLower().Equals("y"))
+                        {
+                           Thread  scheduleThread = new Thread(BackGroundProcess);
+                            scheduleThread.Start();
+                        }
 						Console.WriteLine("\nPress Enter key to stop...\n");
 						Console.ReadLine();
 						myTimer.Stop();
@@ -58,7 +75,8 @@ namespace ServiceMonitoring
 						Console.WriteLine("Monitoring services will stop...");
 						System.Console.ReadKey();
 						if (Console.KeyAvailable)
-						{
+						{  
+                            
 							Environment.Exit(0);
 						}
 
@@ -72,19 +90,38 @@ namespace ServiceMonitoring
 
 		}
 
-		private static void OnTimedEvent( object sender, ElapsedEventArgs e )
+        private static void BackGroundProcess()
+
+        {
+            
+           while(true)
+            {
+                
+                if (DateTime.Now.Hour == 22 && DateTime.Now.Minute == 0 && DateTime.Now.Second == 0
+                    || DateTime.Now.Hour == 6 && DateTime.Now.Minute == 30 && DateTime.Now.Second == 0
+                    || DateTime.Now.Hour == 14 && DateTime.Now.Minute == 0 && DateTime.Now.Second == 0)
+                {
+                    ScheduleReport scheduleReport = new ScheduleReport(
+                        "Second Shift Report",
+                        serviceMonitoring,
+                        mailService);
+                    scheduleReport.CheckServicesStatus(
+                        username,
+                        password,
+                        authority);
+                        
+                }
+            }
+        }
+
+        private static void OnTimedEvent( object sender, ElapsedEventArgs e )
 		{
 			CheckServerApplicatiosServicesStatus(username, password, authority);
 		}
 
 		private static void CheckServerApplicatiosServicesStatus( string username, string password, string authority )
 		{
-			var serviceMonitoringRepository = new ServiceMonitoringRepository(
-new CSvServiceMonitoringReader(),
-new CSVServiceMonitoringWriter());
-			var serviceMonitoring = new Services.ServiceMonitoring(
-				serviceMonitoringRepository,
-				@"D:\ApplicationsAndRespectiveServices.csv");
+			 
 			var controller = new ServiceMonitoringController(serviceMonitoring,mailService);
 			controller.CheckServicesStatus(
 				username,
